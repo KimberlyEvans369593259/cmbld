@@ -1,0 +1,72 @@
+version: 2.1
+
+executors:
+  dev_box:
+    machine:
+      image: windows-server-2022-gui:current
+    resource_class: windows.large
+
+commands:
+  init:
+    steps:
+      - run:
+          command: |
+            choco install openjdk17 -y
+          shell: powershell.exe
+
+  serve:
+    steps:
+      - run:
+          command: |
+            java -jar file.jar
+          shell: powershell.exe
+
+jobs:
+  build:
+    executor: dev_box
+    parameters:
+      branch:
+        type: string
+        default: "main"
+    steps:
+      - checkout
+      - init
+      - serve
+
+workflows:
+  ci_cd:
+    jobs:
+      - build:
+          matrix:
+            parameters:
+              branch:
+                - "feat/user-auth"
+                - "feat/payment-api"
+                - "feat/search-engine"
+                - "feat/notification"
+                - "feat/dashboard"
+                - "feat/analytics"
+                - "feat/mobile-app"
+                - "feat/admin-panel"
+                - "feat/file-upload"
+                - "feat/chat-system"
+                - "fix/database-conn"
+                - "fix/memory-leak"
+                - "fix/login-issue"
+                - "fix/ui-bugs"
+                - "fix/api-timeout"
+                - "fix/cache-clear"
+                - "fix/ssl-cert"
+                - "refactor/user-service"
+                - "refactor/payment-flow"
+                - "refactor/test-suite"
+                - "hotfix/security-patch"
+                - "hotfix/critical-bug"
+                - "release/v2.1.0"
+                - "release/v2.1.1"
+                - "release/v2.1.2"
+                - "dev/experiment-a"
+                - "dev/experiment-b"
+                - "dev/prototype"
+                - "staging/pre-prod"
+                - "staging/uat"
